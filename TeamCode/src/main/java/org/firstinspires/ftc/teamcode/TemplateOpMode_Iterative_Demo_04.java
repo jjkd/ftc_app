@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Template: Iterative OpMode", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 @Disabled
-public class TemplateOpMode_Iterative_Demo_03 extends OpMode
+public class TemplateOpMode_Iterative_Demo_04 extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -56,7 +56,7 @@ public class TemplateOpMode_Iterative_Demo_03 extends OpMode
         telemetry.addData("Status", "Initialized");
 
         /* eg: Initialize the hardware variables.          */
-
+        // @todo add all additional initalization for hardware here
     }
 
     /*
@@ -64,6 +64,7 @@ public class TemplateOpMode_Iterative_Demo_03 extends OpMode
      */
     @Override
     public void init_loop() {
+
     }
 
     /*
@@ -72,6 +73,9 @@ public class TemplateOpMode_Iterative_Demo_03 extends OpMode
     @Override
     public void start() {
         runtime.reset();
+
+        // @todo add all one time 'get ready to run' here
+
     }
 
     /*
@@ -81,6 +85,10 @@ public class TemplateOpMode_Iterative_Demo_03 extends OpMode
     public void loop() {
 
         telemetry.addData("Status", "Running: " + runtime.toString());
+
+        // @todo add function to read all input controls and set globals here
+        // @todo add function to handle drivetrain changes here
+        // @todo add function to handle auxillary hardware features here
     }
 
     /*
@@ -88,6 +96,9 @@ public class TemplateOpMode_Iterative_Demo_03 extends OpMode
      */
     @Override
     public void stop() {
+
+        // @todo add function to clean up status of robot
+
     }
 
 }
