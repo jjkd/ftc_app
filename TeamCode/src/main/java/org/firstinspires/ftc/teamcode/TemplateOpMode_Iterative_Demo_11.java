@@ -36,10 +36,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Template: IO 10", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Template: IO 11", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 // @Disabled
-public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
+public class TemplateOpMode_Iterative_Demo_11 extends OpMode {
     /* Declare OpMode members. */
+
+    public boolean  debugmode = true;   //  set to false to enable commands for robot and surpress teleemetry
+
     private ElapsedTime runtime = new ElapsedTime();
     NullPushbot_demo robot       = new NullPushbot_demo(); // use the class created to define a Pushbot's hardware
     // could also use HardwarePushbotMatrix class.
@@ -57,7 +60,8 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+
+        if (debugmode) telemetry.addData("Status", "Initialized");
 
         /* eg: Initialize the hardware variables.          */
         // @todo add all additional initalization for hardware here
@@ -90,7 +94,7 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
     @Override
     public void loop() {
 
-        telemetry.addData("Status", "Running: " + runtime.toString());
+        if (debugmode) telemetry.addData("Status", "Running: " + runtime.toString());
 
         handleControls();       // function to read all input controls and set globals here
         handleDrivetrain();     //  function to handle drivetrain changes here
@@ -117,13 +121,13 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
 
         left = -gamepad1.left_stick_y;   // (note: The joystick goes negative when pushed forwards, so negate it)
         right = -gamepad1.right_stick_y;
-        telemetry.addData("LJoystickRaw", "%.2f", left);
-        telemetry.addData("RJoystickRaw", "%.2f", right);
+        if (debugmode) telemetry.addData("LJoystickRaw", "%.2f", left);
+        if (debugmode) telemetry.addData("RJoystickRaw", "%.2f", right);
 
         left = scaleMotorPower(enforceDeadZone(left));   // don't move unless far enough from zero
         right = scaleMotorPower(enforceDeadZone(right));    // because physical 'dead stick' may not be seen as zero
-        telemetry.addData("LMotorSpeed", "%.2f", left);
-        telemetry.addData("RMotorSpeed", "%.2f", right);
+        if (debugmode) telemetry.addData("LMotorSpeed", "%.2f", left);
+        if (debugmode) telemetry.addData("RMotorSpeed", "%.2f", right);
 
         leftMotorSpeed = left;
         rightMotorSpeed = right;
@@ -133,8 +137,8 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
 
     private void handleDrivetrain() { // @todo add code to update drivetrain state
 
-    //    robot.leftMotor.setPower(leftMotorSpeed);
-    //    robot.rightMotor.setPower(rightMotorSpeed);
+        if (!debugmode)    robot.leftMotor.setPower(leftMotorSpeed);
+        if (!debugmode)    robot.rightMotor.setPower(rightMotorSpeed);
     }
 
 
