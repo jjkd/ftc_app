@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Template: IO 10", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Template: IO 10", group="Iterative Opmode 2")  // @Autonomous(...) is the other common choice
 // @Disabled
 public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
     /* Declare OpMode members. */

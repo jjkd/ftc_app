@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Locale;
 
-@TeleOp(name="Template: IO 12", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Template: IO 12", group="Iterative Opmode 1")  // @Autonomous(...) is the other common choice
 // @Disabled
 public class TemplateOpMode_Iterative_Demo_12 extends OpMode {
     /* Declare OpMode members. */
