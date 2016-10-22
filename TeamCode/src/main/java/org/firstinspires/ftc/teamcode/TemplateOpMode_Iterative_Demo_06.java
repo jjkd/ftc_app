@@ -32,21 +32,23 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Template: Iterative OpMode", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 @Disabled
-public class TemplateOpMode_Iterative_Demo_04 extends OpMode
-{
+public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
     HardwarePushbot_demo robot       = new HardwarePushbot_demo(); // use the class created to define a Pushbot's hardware
     // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+
+    double          leftMotorSpeed = 0.0;               // remember what was requested based on joystick position
+    double          rightMotorSpeed = 0.0;               // remember what was requested based on joystick position
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -57,6 +59,8 @@ public class TemplateOpMode_Iterative_Demo_04 extends OpMode
 
         /* eg: Initialize the hardware variables.          */
         // @todo add all additional initalization for hardware here
+        robot.init(hardwareMap); // function for init drivetrain/servos **does not handle any sensors!!**
+
     }
 
     /*
@@ -86,9 +90,9 @@ public class TemplateOpMode_Iterative_Demo_04 extends OpMode
 
         telemetry.addData("Status", "Running: " + runtime.toString());
 
-        // @todo add function to read all input controls and set globals here
-        // @todo add function to handle drivetrain changes here
-        // @todo add function to handle auxillary hardware features here
+        handle_controls();    // function to read all input controls and set globals here
+        handle_drivetrain();    //  function to handle drivetrain changes here
+        handle_features();    //  function to handle auxillary hardware features here
     }
 
     /*
@@ -101,4 +105,26 @@ public class TemplateOpMode_Iterative_Demo_04 extends OpMode
 
     }
 
+
+    private void handle_controls() { // @todo add code to read joysticks
+
+        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
+        leftMotorSpeed = -gamepad1.left_stick_y;
+        rightMotorSpeed = -gamepad1.right_stick_y;
+
+    }
+
+
+    private void handle_drivetrain() { // @todo add code to update drivetrain state
+
+        robot.leftMotor.setPower(leftMotorSpeed);
+        robot.rightMotor.setPower(rightMotorSpeed);
+    }
+
+
+    private void handle_features() {  // @todo add code to update aux features state
+
+
+    }
 }
+
