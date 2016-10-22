@@ -170,7 +170,7 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
         //  need to compensate for deadzone
         // and use an acceleration curve
 
-        if (motorpower >= 0) {      // handle positive and negative separately
+        if (motorpower >= 0.0) {      // handle positive and negative separately
 
             motorpower -= minimumDeadZone;  // remove deadzone offzet, otherwise can't represent a power less than deadzone
             motorpower = motorpower * motorpower;    // square motorpower to generate the acceleration curve
@@ -179,10 +179,12 @@ public class TemplateOpMode_Iterative_Demo_10 extends OpMode {
 
             motorpower += minimumDeadZone;              // remove deadzone offzet, otherwise can't represent a power less than deadzone
             motorpower = motorpower * motorpower;       // square motorpower to generate the acceleration curve
-            motorpower = -1 * motorpower;               // put back the sign lost when squaring the value
+            motorpower = -1.0 * motorpower;               // put back the sign lost when squaring the value
         }
 
-        motorpower = motorpower / (1 - minimumDeadZone);  // rescale to 1.0 as max joystick position
+        double scalefactor = 1.0 - minimumDeadZone;
+        scalefactor = scalefactor * scalefactor;  // don't forget we squared the joystick value
+        motorpower = motorpower/scalefactor;  // rescale to 1.0 as max joystick position
         return (motorpower);
     }
 }

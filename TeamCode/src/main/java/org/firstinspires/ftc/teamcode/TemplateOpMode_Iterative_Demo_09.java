@@ -183,7 +183,9 @@ public class TemplateOpMode_Iterative_Demo_09 extends OpMode {
             motorpower = -1 * motorpower;               // put back the sign lostg when squaring the value
         }
 
-        motorpower = motorpower / (1 - minimumDeadZone);  // rescale to 1.0 as max joystick position
+        double scalefactor = 1.0 - minimumDeadZone;
+        scalefactor = scalefactor * scalefactor;  // don't forget we squared the joystick value
+        motorpower = motorpower/scalefactor;  // rescale to 1.0 as max joystick position
         return (motorpower);
     }
 }
