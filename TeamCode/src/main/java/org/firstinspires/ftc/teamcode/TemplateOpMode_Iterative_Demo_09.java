@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Template: Iterative OpMode", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 @Disabled
-public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
+public class TemplateOpMode_Iterative_Demo_09 extends OpMode {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
     HardwarePushbot_demo robot       = new HardwarePushbot_demo(); // use the class created to define a Pushbot's hardware
@@ -47,8 +47,11 @@ public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
 
-    double          leftMotorSpeed = 0.0;               // remember what was requested based on joystick position
-    double          rightMotorSpeed = 0.0;               // remember what was requested based on joystick position
+    private double          leftMotorSpeed = 0.0;               // remember what was requested based on joystick position
+    private double          rightMotorSpeed = 0.0;               // remember what was requested based on joystick position
+
+    private double          minimumDeadZone = 0.05;             // adjust this value to increase or descrease the deadzone
+    private double          maxMotorSpeed = 0.95;             // adjust this value to set the maximum motor speed, depends on motor type
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -90,9 +93,11 @@ public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
 
         telemetry.addData("Status", "Running: " + runtime.toString());
 
-        handleControls();    // function to read all input controls and set globals here
-        handleDrivetrain();    //  function to handle drivetrain changes here
-        handleFeatures();    //  function to handle auxillary hardware features here
+        handleControls();       // function to read all input controls and set globals here
+        handleDrivetrain();     //  function to handle drivetrain changes here
+        handleFeatures();       //  function to handle auxillary hardware features here
+        telemetry.update();     //  needed to ensure that driver station is updated, but udpate
+                                //  liomited by SDK to only four times per second
     }
 
     /*
@@ -107,10 +112,22 @@ public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
 
 
     private void handleControls() { // @todo add code to read joysticks
-
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftMotorSpeed = -gamepad1.left_stick_y;
-        rightMotorSpeed = -gamepad1.right_stick_y;
+        double left = 0.0;
+        double right = 0.0;
+
+        left = -gamepad1.left_stick_y;   // (note: The joystick goes negative when pushed forwards, so negate it)
+        right = -gamepad1.right_stick_y;
+        telemetry.addData("LJoystickRaw", "%.2f", left);
+        telemetry.addData("RJoystickRaw", "%.2f", right);
+
+        left = scaleMotorPower(enforceDeadZone(left));   // don't move unless far enough from zero
+        right = scaleMotorPower(enforceDeadZone(right));    // because physical 'dead stick' may not be seen as zero
+        telemetry.addData("LMotorSpeed", "%.2f", left);
+        telemetry.addData("RMotorSpeed", "%.2f", right);
+
+        leftMotorSpeed = left;
+        rightMotorSpeed = right;
 
     }
 
@@ -125,6 +142,49 @@ public class TemplateOpMode_Iterative_Demo_06 extends OpMode {
     private void handleFeatures() {  // @todo add code to update aux features state
 
 
+    }
+
+    private double enforceDeadZone(double joystickPos) {
+
+        //  physical 'dead stick' mayn not be seen as zero, so need to eliminate anything below a threshhold
+
+        double minimumDeadZone = 0.05;      // adjust this value to increase or descrease the deadzone
+
+        if (joystickPos >= 0) {      // handle positive and negative separately
+
+            if (joystickPos < minimumDeadZone) {
+                joystickPos = 0;        // less than minimum from zero, so set to zero
+            }
+
+        }   else    {               // not positive, so must be negative
+
+            if (joystickPos > -1 * minimumDeadZone) {
+                joystickPos = 0;        // more than minimum from zero, so set to zero
+            }
+        }
+
+        return (joystickPos);
+    }
+
+    private double scaleMotorPower(double motorpower) {
+
+        //  need to compensate for deadzone
+        // and use an acceleration curve
+
+        if (motorpower >= 0) {      // handle positive and negative separately
+
+            motorpower -= minimumDeadZone;  // remove deadzone offzet, otherwise can't represent a power less than deadzone
+            motorpower = motorpower * motorpower;    // square motorpower to generate the acceleration curve
+
+        }   else    {               // not positive, so must be negative
+
+            motorpower += minimumDeadZone;              // remove deadzone offzet, otherwise can't represent a power less than deadzone
+            motorpower = motorpower * motorpower;       // square motorpower to generate the acceleration curve
+            motorpower = -1 * motorpower;               // put back the sign lostg when squaring the value
+        }
+
+        motorpower = motorpower / (1 - minimumDeadZone);  // rescale to 1.0 as max joystick position
+        return (motorpower);
     }
 }
 
